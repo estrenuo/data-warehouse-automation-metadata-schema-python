@@ -1,0 +1,23 @@
+{# TemplateSampleMultipledata_item_mappings.json #}
+{# Example where multiple sources map to a single target. #}
+{% for data_object_mapping in data_object_mappings %}
+{# Working on {{ data_object_mapping.name }} #}
+
+Explaining mappings of multiple sources to one target, in this case {{ data_object_mapping.target_data_object.name }}.
+
+The following source Data Objects map to a single target:
+{% for source_data_object in data_object_mapping.source_data_objects %}
+- {{ source_data_object.name }}
+{% endfor %}
+
+Or, in other words {{ data_object_mapping.source_data_objects.0.name }} and {{ data_object_mapping.source_data_objects.1.name }} map to {{ data_object_mapping.target_data_object.name }}.
+
+The same applies at Data Item Mapping level, where the following Data Item mappings are defined:
+
+{% for data_item_mapping in data_object_mapping.data_item_mappings %}
+{% for source_data_item in data_item_mapping.source_data_items %}
+{{ source_data_item.name }}{% if not loop.last %} and {% endif %}
+{% endfor %} map(s) to {{ data_item_mapping.target_data_item.name }}.
+
+{% endfor %}
+{% endfor %}

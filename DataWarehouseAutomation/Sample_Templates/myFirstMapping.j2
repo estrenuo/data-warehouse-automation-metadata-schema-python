@@ -1,0 +1,11 @@
+{# myFirstTemplate.json #}
+{# Example using a templating engine for a simple select statement. #}
+{% for dataObjectMapping in dataObjectMappings %}
+{# Working on {{ dataObjectMapping.name }}. #}
+SELECT
+{% for dataItemMapping in dataObjectMapping.dataItemMappings %}
+  {{ dataObjectMapping.sourceDataItems.0.name }} AS {{ dataItemMapping.targetDataItem.name }}{% if not loop.last %},{% endif %}
+{% endfor %}
+FROM [{{ dataObjectMapping.targetDataObject.name }}]
+WHERE {{ dataObjectMapping.dataItemMappings.0.targetDataItem.name }} != NULL
+{% endfor %}
