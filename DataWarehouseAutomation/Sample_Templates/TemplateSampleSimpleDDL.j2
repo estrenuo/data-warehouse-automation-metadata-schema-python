@@ -1,0 +1,17 @@
+{# TemplateSampleSimpleDDL.json #}
+{# Example for using a templating engine to generate DDL statements. #}
+{% for mapping in data_object_mappings %}
+{# Generating DDL for {{ mapping.source_data_objects[0].name }} #}
+
+{# Drop table if exists #}
+IF OBJECT_ID(N'{{ mapping.source_data_objects[0].name }}', N'U') IS NOT NULL
+   DROP TABLE [{{ mapping.source_data_objects[0].name }}]
+   
+{# Create table #}
+CREATE TABLE [{{ mapping.source_data_objects[0].name }}] (
+{% for data_item in mapping.source_data_objects[0].data_items %}
+  [{{ data_item.name }}] {{ data_item.data_type }}({{ data_item.character_length }}) NOT NULL{% if not loop.last %},{% endif %}
+
+{% endfor %}
+)
+{% endfor %}

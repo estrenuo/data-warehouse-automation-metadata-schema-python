@@ -1,0 +1,10 @@
+{# TemplateSampleBasicWithExtensions.json #}
+{# Example using key/value pair extensions. #}
+{% for data_object_mapping in data_object_mappings %}
+{# Working on {{ data_object_mapping.name }}. #}
+
+Data Object {{ data_object_mapping.target_data_object.name }}'s first extension is that the {{ data_object_mapping.target_data_object.extensions[0].key }} is {{ data_object_mapping.target_data_object.extensions[0].value }}.
+
+In addition to this, the {{ data_object_mapping.target_data_object.extensions[1].key }} is {{ data_object_mapping.target_data_object.extensions[1].value }}.
+
+{% endfor %}

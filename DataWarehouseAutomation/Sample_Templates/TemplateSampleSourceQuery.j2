@@ -1,0 +1,44 @@
+{# TemplateSampleSourceQuery.json #}
+{# Example using a data object as a query source rather than a table/file. #}
+{# Usage in a CTE context with multiple sources mapping to a single target #}
+{% for data_object_mapping in data_object_mappings %}
+{% if data_object_mapping.mapping_name %}
+{# Working on {{ data_object_mapping.name }}. #}
+{% else %}
+{# No mapping name is defined. #}
+{% endif %}
+
+WITH
+{% for source_data_object in data_object_mapping.source_data_objects %}
+[{{ loop.index0 }}] AS
+(
+  {% if source_data_object.query_code %}
+  {# This is the data query as a source object #}
+  {{ source_data_object.query_code }}
+  {% else %}
+  {# This is the item, with brackets added using a custom extension #}
+  SELECT * FROM {{ source_data_object.name|wrap("[", "]") }}
+  {% endif %}
+)
+{% if not loop.last %},{% endif %}
+{% endfor %}
+
+{% for source_data_object in data_object_mapping.source_data_objects %}
+SELECT
+{% for data_item_mapping in data_object_mapping.data_item_mappings %}
+{% for source_data_item in data_item_mapping.source_data_items %}
+{% if source_data_item.query_code %}
+{{ source_data_item.query_code }} AS {{ data_item_mapping.target_data_item.name }}
+{% else %}
+{{ source_data_item.name|wrap("[", "]") }} AS {{ data_item_mapping.target_data_item.name }}
+{% endif %}
+{% if not loop.last %},{% endif %}
+{% endfor %}
+{% endfor %}
+FROM [{{ loop.index0 }}]
+{% if not loop.last %}
+UNION
+{% endif %}
+{% endfor %}
+INTO {{ data_object_mapping.target_data_object.name }}
+{% endfor %}
